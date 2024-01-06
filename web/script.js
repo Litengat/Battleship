@@ -1,9 +1,11 @@
+
+
 const gameBoardSize = 8;
 var gamestate = 0;
 
 // 1 = placeships
 // 2 = wait for other
-// 3 = i play
+// 3 = I play
 // 4 = other play
 // 5 = win
 // 6 = los
@@ -63,6 +65,9 @@ function game(data){
         case "shipReady":
             shipReady(data.data);
             break;
+        case "hit":
+            hit(data.data);
+            break;
 
     }
 
@@ -105,12 +110,33 @@ function shipPlaced(data){
 function shipReady(data){
     if(data){
         gamestate = 3
+        GameButton.innerHTML = "your turn";
     }else{
         gamestate = 4
     }
     
 }
-
+// {"type":"hit","data":{"x":"6","y":"0","ship":false}}
+function hit(data){
+    var cell = getCellbyPos(data.x,data.y);
+    if(gamestate == 3){
+        if(data.ship){
+            cell.classList.add("boom");
+        }else{
+            cell.classList.add("miss");
+        }
+        gamestate = 4;
+        GameButton.innerHTML = "your turn";
+    }else if(gamestate == 4){
+        if(data.ship){
+            cell.classList.add("destroyed");
+        }else{
+            cell.classList.add("missother");
+        }
+        gamestate = 3;
+        GameButton.innerHTML = "Wait for other...";
+    }
+}
 
 
 
@@ -153,13 +179,16 @@ function shipfinished(){
     GameButton.innerHTML = "Wait for other...";
     sendPackage("shipfinished");
 }
+
 function clickCell(x,y){
     switch(gamestate){
         case 1:
             sendclickCell("placeBoats",x,y)
             break;
         case 3:
-            sendclickCell("shoot",x,y)
+            if(!getCellbyPos(x,y).classList.contains("ship")){
+                sendclickCell("shoot",x,y)
+            }
             break;
     }
 }
@@ -167,9 +196,7 @@ function clickCell(x,y){
 function sendclickCell(type,x,y){
     sendPackageWithData(type,{
         "x":x,
-        "y":y,
-        "type":"dot",
-        "rotated": true
+        "y":y
     })
 }
 

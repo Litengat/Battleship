@@ -17,6 +17,9 @@ export function packageManager(socket, data){
         case "shipfinished":
             shipfinished(socket,data.data);
             break;
+        case "shoot":
+            shoot(socket,data.data);
+            break;
     }
 }
 
@@ -81,12 +84,39 @@ function shipfinished(socket,data){
     if(game.hostfinished && game.guestfinished){
         sendPackageWithData(players.get(game.host),"shipReady",true);
         sendPackageWithData(players.get(game.guest),"shipReady",false);
+        game.gamestate = 3;
     }
 
 }
+function shoot(socket,data){
+    var game = games.get(socket.gameid);
+    var cell = game.board[data.x][data.y];
+    var host = players.get(game.host);
+    var guest = players.get(game.guest);
+    if(game.gamestate == 3 && game.host == socket.id){
+        sendhit(host,data.x,data.y,cell.guest == 'ship')
+        sendhit(guest,data.x,data.y,cell.guest == 'ship')
+        game.gamestate = 4;
+    }
+    if(game.gamestate == 4 && game.guest == socket.id){
+        sendhit(host,data.x,data.y,cell.host == 'ship')
+        sendhit(guest,data.x,data.y,cell.host == 'ship')
+        game.gamestate = 3;
+    }
+
+    console.log(game.board[data.x][data.y]);
 
 
 
+
+}
+function sendhit(socket,x,y,ship){
+    sendPackageWithData(socket,"hit",{
+        "x":x,
+        "y":y,
+        "ship":ship
+    })
+}
 
 export function getNewId(map){
     var i = Math.floor(Math.random() * 8999)+1000;
