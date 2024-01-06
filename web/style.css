@@ -7,11 +7,6 @@
 #player-board > div {
     border: 1px solid black;
 }
-#ships{
-  margin-left: 20px;
-}
-
-
 .cell {
     width: 40px;
     height: 40px;
@@ -19,7 +14,6 @@
 }
 .ship,
 .destroyed,
-.missother,
 .miss,
 .boom {
   display: flex;
@@ -27,8 +21,7 @@
   align-items: center;
 }
 .ship::after,
-.destroyed::after, 
-.missother::after, 
+.destroyed::after,  
 .boom::after,
 .miss::after {
   content: '';
@@ -46,13 +39,10 @@
   background-color: red;
 }
 .ship::after{
-    border: 1vmin solid lightskyblue;
+    border: 1vmin solid lightskyblue; ;
 }
 .destroyed::after{
     border: 1vmin solid blue;
-}
-.missother::after {
-  border: 1vmin solid gray;
 }
 
 .boom {

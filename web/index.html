@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div>
+    <button id="button">get</button>
+    <input id="input">
+    </div>
+    
     <h1>Schiffe Versenken</h1>
     <div>
         <input type="text" id="IDinput" maxlength="4">
@@ -15,13 +20,7 @@
     </div>
     <div id="gamepanel" hidden>
         <h2>Dein Spielfeld</h2>
-        <div style="display: flex;">
-            <div id="player-board" class="board"></div>
-            <div id="ships">
-                <a></a>
-            </div>
-        </div>
-        
+        <div id="player-board" class="board"></div>
     </div>
 
     <script src="script.js"></script>
